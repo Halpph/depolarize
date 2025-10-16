@@ -227,8 +227,9 @@ function populateFilters() {
     const types = new Set();
     const categories = new Set();
 
-    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
-    const categoryKey = currentLanguage === 'it' ? 'Categoria' : 'Category';
+    // Use Italian columns if in Italian mode, otherwise English
+    const typeKey = currentLanguage === 'it' ? 'Type_IT' : 'Type';
+    const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
 
     const pageData = getPageData();
     pageData.forEach(entry => {
@@ -270,8 +271,9 @@ function renderCards() {
         return;
     }
 
-    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
-    const categoryKey = currentLanguage === 'it' ? 'Categoria' : 'Category';
+    // Use Italian columns if in Italian mode, otherwise English
+    const typeKey = currentLanguage === 'it' ? 'Type_IT' : 'Type';
+    const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
 
     cardsContainer.innerHTML = filteredData.map(entry => {
         const socialButtons = [];
@@ -359,8 +361,9 @@ function renderTable() {
         return;
     }
 
-    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
-    const categoryKey = currentLanguage === 'it' ? 'Categoria' : 'Category';
+    // Use Italian columns if in Italian mode, otherwise English
+    const typeKey = currentLanguage === 'it' ? 'Type_IT' : 'Type';
+    const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
 
     tableBody.innerHTML = filteredData.map(entry => {
         const socialButtons = [];
@@ -511,8 +514,9 @@ function filterData() {
     const typeFilter = document.getElementById('typeFilter').value;
     const categoryFilter = document.getElementById('categoryFilter').value;
 
-    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
-    const categoryKey = currentLanguage === 'it' ? 'Categoria' : 'Category';
+    // Use Italian columns if in Italian mode, otherwise English
+    const typeKey = currentLanguage === 'it' ? 'Type_IT' : 'Type';
+    const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
 
     const pageData = getPageData();
 
@@ -580,7 +584,8 @@ function sortTable(column) {
         currentSort.ascending = true;
     }
 
-    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
+    // Use Italian columns if in Italian mode, otherwise English
+    const typeKey = currentLanguage === 'it' ? 'Type_IT' : 'Type';
 
     filteredData.sort((a, b) => {
         let valA, valB;
