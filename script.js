@@ -354,9 +354,11 @@ function renderCards() {
     const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
 
     const paginatedData = getPaginatedData();
+    // Calculate rank based on position in filtered data
     const startIndex = itemsPerPage === 'all' ? 0 : (currentPaginationPage - 1) * itemsPerPage;
 
     cardsContainer.innerHTML = paginatedData.map((entry, index) => {
+        // Rank is based on the filtered dataset, not the original CSV ID
         const rank = startIndex + index + 1;
         const socialButtons = [];
 
