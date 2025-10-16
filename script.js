@@ -3,6 +3,8 @@ let allData = [];
 let filteredData = [];
 let currentPage = 'misinformation'; // 'misinformation' or 'factual'
 let currentLanguage = 'en'; // 'en' or 'it'
+let currentSort = { column: null, ascending: true };
+let darkMode = false;
 
 // Translations
 const translations = {
@@ -115,7 +117,18 @@ function getPageData() {
     const dataWithSocial = allData.filter(hasSocialMedia);
 
     if (currentPage === 'factual') {
-        return dataWithSocial.filter(isFactual);
+        const factualData = dataWithSocial.filter(isFactual);
+        return factualData.sort((a, b) => {
+            const misinfoScoreA = parseInt(a.Misinformation_Score) || 0;
+            const misinfoScoreB = parseInt(b.Misinformation_Score) || 0;
+            const hateScoreA = parseInt(a.Hate_Speech_Score) || 0;
+            const hateScoreB = parseInt(b.Hate_Speech_Score) || 0;
+
+            if (misinfoScoreA !== misinfoScoreB) {
+                return misinfoScoreA - misinfoScoreB;
+            }
+            return hateScoreA - hateScoreB;
+        });
     } else {
         return dataWithSocial.filter(entry => !isFactual(entry));
     }
@@ -143,15 +156,27 @@ function updateLanguage() {
 
     document.getElementById('mainTitle').textContent = t.mainTitle;
     document.getElementById('mainSubtitle').textContent = t.mainSubtitle;
-    document.getElementById('searchLabel').textContent = t.searchLabel;
     document.getElementById('search').placeholder = t.searchPlaceholder;
-    document.getElementById('typeLabel').textContent = t.typeLabel;
-    document.getElementById('categoryLabel').textContent = t.categoryLabel;
-    document.getElementById('nameHeader').textContent = t.nameHeader;
-    document.getElementById('typeHeader').textContent = t.typeHeader;
+
+    // Update table headers - preserve the sorting structure
+    const nameHeader = document.getElementById('nameHeader');
+    if (nameHeader) {
+        nameHeader.querySelector('span').textContent = t.nameHeader;
+    }
+
+    const typeHeader = document.getElementById('typeHeader');
+    if (typeHeader) {
+        typeHeader.querySelector('span').textContent = t.typeHeader;
+    }
+
     document.getElementById('categoryHeader').textContent = t.categoryHeader;
     document.getElementById('descriptionHeader').textContent = t.descriptionHeader;
-    document.getElementById('socialHeader').textContent = t.socialHeader;
+
+    const socialHeader = document.getElementById('socialHeader');
+    if (socialHeader) {
+        socialHeader.querySelector('span').textContent = 'Reliability';
+    }
+
     document.getElementById('footerUpdated').textContent = t.footerUpdated;
     document.getElementById('footerSources').textContent = t.footerSources;
     document.getElementById('langText').textContent = currentLanguage === 'en' ? 'IT' : 'EN';
@@ -160,6 +185,7 @@ function updateLanguage() {
     updatePageTitle();
     populateFilters();
     renderTable();
+    renderCards();
     updateStats();
 }
 
@@ -168,7 +194,8 @@ async function loadCSV() {
     try {
         detectLanguage();
 
-        const response = await fetch('list.csv');
+        const csvFile = currentLanguage === 'it' ? 'list_it.csv' : 'list.csv';
+        const response = await fetch(csvFile);
         const text = await response.text();
         allData = parseCSV(text);
 
@@ -188,10 +215,13 @@ function populateFilters() {
     const types = new Set();
     const categories = new Set();
 
+    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
+    const categoryKey = currentLanguage === 'it' ? 'Categoria' : 'Category';
+
     const pageData = getPageData();
     pageData.forEach(entry => {
-        if (entry.Type) types.add(entry.Type);
-        if (entry.Category) categories.add(entry.Category);
+        if (entry[typeKey]) types.add(entry[typeKey]);
+        if (entry[categoryKey]) categories.add(entry[categoryKey]);
     });
 
     const typeFilter = document.getElementById('typeFilter');
@@ -218,6 +248,95 @@ function populateFilters() {
     });
 }
 
+// Render cards
+function renderCards() {
+    const t = translations[currentLanguage];
+    const cardsContainer = document.getElementById('cardsContainer');
+
+    if (filteredData.length === 0) {
+        cardsContainer.innerHTML = `<div style="text-align: center; color: #999; padding: 40px; background: white; border-radius: 8px;">${t.noResults}</div>`;
+        return;
+    }
+
+    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
+    const categoryKey = currentLanguage === 'it' ? 'Categoria' : 'Category';
+
+    cardsContainer.innerHTML = filteredData.map(entry => {
+        const socialButtons = [];
+
+        if (entry.Facebook) {
+            socialButtons.push(`<a href="${entry.Facebook}" target="_blank" class="social-btn facebook-btn" title="Visit Facebook page">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Facebook
+            </a>`);
+        }
+
+        if (entry.Instagram) {
+            socialButtons.push(`<a href="${entry.Instagram}" target="_blank" class="social-btn instagram-btn" title="Visit Instagram page">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                Instagram
+            </a>`);
+        }
+
+        const socialButtonsHTML = socialButtons.length > 0
+            ? socialButtons.join('')
+            : '<span class="no-link">No social media</span>';
+
+        const description = currentLanguage === 'it' ? entry.Description_IT : entry.Description;
+        const descriptionHTML = description
+            ? `<p class="card-description">${truncateDescription(description, 150)}</p>`
+            : '<span class="no-description">No description available</span>';
+
+        const misinfoScore = parseInt(entry.Misinformation_Score) || 0;
+        const hateScore = parseInt(entry.Hate_Speech_Score) || 0;
+
+        function getScoreClass(score) {
+            if (score >= 9) return 'score-extreme';
+            if (score >= 7) return 'score-high';
+            if (score >= 5) return 'score-medium';
+            if (score >= 3) return 'score-low';
+            return 'score-minimal';
+        }
+
+        const scoreHTML = `
+            <div class="scores">
+                <div class="score-item ${getScoreClass(misinfoScore)}">
+                    <span class="score-label">${currentLanguage === 'it' ? 'Disinfo' : 'Misinfo'}</span>
+                    <span class="score-value">${misinfoScore}/10</span>
+                </div>
+                <div class="score-item ${getScoreClass(hateScore)}">
+                    <span class="score-label">${currentLanguage === 'it' ? 'Odio' : 'Hate'}</span>
+                    <span class="score-value">${hateScore}/10</span>
+                </div>
+            </div>
+        `;
+
+        return `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-id">#${entry.ID}</div>
+                    <h3 class="card-name">${entry.Name}</h3>
+                    ${scoreHTML}
+                    <div class="card-badges">
+                        <span class="badge badge-type">${entry[typeKey]}</span>
+                        <span class="badge badge-category">${entry[categoryKey]}</span>
+                    </div>
+                </div>
+                <div class="card-section">
+                    <div class="card-section-title">${currentLanguage === 'it' ? 'Descrizione' : 'Description'}</div>
+                    ${descriptionHTML}
+                </div>
+                <div class="card-section">
+                    <div class="card-section-title">${currentLanguage === 'it' ? 'Social Media' : 'Social Media'}</div>
+                    <div class="card-social">
+                        ${socialButtonsHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
 // Render table
 function renderTable() {
     const t = translations[currentLanguage];
@@ -227,6 +346,9 @@ function renderTable() {
         tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #999; padding: 40px;">${t.noResults}</td></tr>`;
         return;
     }
+
+    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
+    const categoryKey = currentLanguage === 'it' ? 'Categoria' : 'Category';
 
     tableBody.innerHTML = filteredData.map(entry => {
         const socialButtons = [];
@@ -252,7 +374,7 @@ function renderTable() {
         // Get description in current language
         const description = currentLanguage === 'it' ? entry.Description_IT : entry.Description;
         const descriptionHTML = description
-            ? `<p class="description-text">${description}</p>`
+            ? `<p class="description-text">${truncateDescription(description, 200)}</p>`
             : '<span class="no-description">No description available</span>';
 
         // Get score and determine color/danger level
@@ -288,8 +410,8 @@ function renderTable() {
                     <strong>${entry.Name}</strong>
                     ${scoreHTML}
                 </td>
-                <td><span class="badge badge-type">${entry.Type}</span></td>
-                <td><span class="badge badge-category">${entry.Category}</span></td>
+                <td><span class="badge badge-type">${entry[typeKey]}</span></td>
+                <td><span class="badge badge-category">${entry[categoryKey]}</span></td>
                 <td class="description-cell">${descriptionHTML}</td>
                 <td>${socialButtonsHTML}</td>
             </tr>
@@ -366,6 +488,7 @@ function switchPage(page) {
     filteredData = getPageData();
     populateFilters();
     renderTable();
+    renderCards();
     updateStats();
     updatePageTitle();
 }
@@ -376,17 +499,22 @@ function filterData() {
     const typeFilter = document.getElementById('typeFilter').value;
     const categoryFilter = document.getElementById('categoryFilter').value;
 
+    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
+    const categoryKey = currentLanguage === 'it' ? 'Categoria' : 'Category';
+
     const pageData = getPageData();
 
     filteredData = pageData.filter(entry => {
         const matchesSearch = entry.Name.toLowerCase().includes(searchTerm);
-        const matchesType = !typeFilter || entry.Type === typeFilter;
-        const matchesCategory = !categoryFilter || entry.Category === categoryFilter;
+        const matchesType = !typeFilter || entry[typeKey] === typeFilter;
+        const matchesCategory = !categoryFilter || entry[categoryKey] === categoryFilter;
 
         return matchesSearch && matchesType && matchesCategory;
     });
 
+    updateFilterBadge();
     renderTable();
+    renderCards();
     updateStats();
 }
 
@@ -395,5 +523,159 @@ document.getElementById('search').addEventListener('input', filterData);
 document.getElementById('typeFilter').addEventListener('change', filterData);
 document.getElementById('categoryFilter').addEventListener('change', filterData);
 
+// Reset filters button
+document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+
+// Reset filters
+function resetFilters() {
+    document.getElementById('search').value = '';
+    document.getElementById('typeFilter').value = '';
+    document.getElementById('categoryFilter').value = '';
+    filterData();
+}
+
+// Update filter badge
+function updateFilterBadge() {
+    const searchTerm = document.getElementById('search').value;
+    const typeFilter = document.getElementById('typeFilter').value;
+    const categoryFilter = document.getElementById('categoryFilter').value;
+
+    let count = 0;
+    if (searchTerm) count++;
+    if (typeFilter) count++;
+    if (categoryFilter) count++;
+
+    const badge = document.getElementById('filterBadge');
+    const resetBtn = document.getElementById('resetFiltersBtn');
+    const filterCount = document.getElementById('filterCount');
+
+    if (count > 0) {
+        filterCount.textContent = count;
+        badge.style.display = 'inline-flex';
+        resetBtn.style.display = 'inline-flex';
+    } else {
+        badge.style.display = 'none';
+        resetBtn.style.display = 'none';
+    }
+}
+
+// Sort table
+function sortTable(column) {
+    if (currentSort.column === column) {
+        currentSort.ascending = !currentSort.ascending;
+    } else {
+        currentSort.column = column;
+        currentSort.ascending = true;
+    }
+
+    const typeKey = currentLanguage === 'it' ? 'Tipo' : 'Type';
+
+    filteredData.sort((a, b) => {
+        let valA, valB;
+
+        if (column === 'name') {
+            valA = a.Name.toLowerCase();
+            valB = b.Name.toLowerCase();
+        } else if (column === 'type') {
+            valA = a[typeKey].toLowerCase();
+            valB = b[typeKey].toLowerCase();
+        } else if (column === 'reliability') {
+            // Sort by misinformation score (lower is better/more reliable)
+            valA = parseInt(a.Misinformation_Score) || 0;
+            valB = parseInt(b.Misinformation_Score) || 0;
+        }
+
+        if (valA < valB) return currentSort.ascending ? -1 : 1;
+        if (valA > valB) return currentSort.ascending ? 1 : -1;
+        return 0;
+    });
+
+    // Update sort indicators
+    document.querySelectorAll('thead th.sortable').forEach(th => {
+        th.classList.remove('sorted');
+    });
+
+    const headerMap = {
+        'name': 'nameHeader',
+        'type': 'typeHeader',
+        'reliability': 'socialHeader'
+    };
+
+    const header = document.getElementById(headerMap[column]);
+    if (header) {
+        header.classList.add('sorted');
+    }
+
+    renderTable();
+    renderCards();
+}
+
+// Toggle dark mode
+function toggleDarkMode() {
+    darkMode = !darkMode;
+    document.body.classList.toggle('dark-mode', darkMode);
+
+    const darkIcon = document.querySelector('.dark-mode-icon');
+    const lightIcon = document.querySelector('.light-mode-icon');
+
+    if (darkMode) {
+        darkIcon.style.display = 'none';
+        lightIcon.style.display = 'block';
+        localStorage.setItem('darkMode', 'true');
+    } else {
+        darkIcon.style.display = 'block';
+        lightIcon.style.display = 'none';
+        localStorage.setItem('darkMode', 'false');
+    }
+}
+
+// Check for saved dark mode preference
+function initDarkMode() {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode === 'true') {
+        darkMode = true;
+        document.body.classList.add('dark-mode');
+        const darkIcon = document.querySelector('.dark-mode-icon');
+        const lightIcon = document.querySelector('.light-mode-icon');
+        if (darkIcon && lightIcon) {
+            darkIcon.style.display = 'none';
+            lightIcon.style.display = 'block';
+        }
+    }
+}
+
+// Truncate long descriptions with "Show more" toggle
+function truncateDescription(text, maxLength = 200) {
+    if (!text || text.length <= maxLength) return text;
+
+    const truncated = text.substring(0, maxLength);
+    const id = 'desc-' + Math.random().toString(36).substr(2, 9);
+
+    return `
+        <span id="${id}-short">${truncated}...
+            <a href="#" onclick="toggleDescription('${id}'); return false;" class="show-more-link">Show more</a>
+        </span>
+        <span id="${id}-full" style="display: none;">${text}
+            <a href="#" onclick="toggleDescription('${id}'); return false;" class="show-more-link">Show less</a>
+        </span>
+    `;
+}
+
+function toggleDescription(id) {
+    const short = document.getElementById(id + '-short');
+    const full = document.getElementById(id + '-full');
+
+    if (short && full) {
+        if (short.style.display === 'none') {
+            short.style.display = 'inline';
+            full.style.display = 'none';
+        } else {
+            short.style.display = 'none';
+            full.style.display = 'inline';
+        }
+    }
+}
+
 // Load data when page loads
+initDarkMode();
 loadCSV();
