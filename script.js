@@ -32,6 +32,8 @@ const translations = {
         descriptionHeader: 'Description',
         socialHeader: 'Social Media',
         noResults: 'No results found',
+        ctaTitle: 'Take Action for Better Information',
+        ctaText: 'Consider <strong>unfollowing or being critical of misinformation sources</strong> identified below, and instead <strong>follow factual and reliable sources</strong>. Your media diet shapes your understanding of the world—choose sources that prioritize accuracy and fact-checking.',
         footerUpdated: 'Last Updated: January 2025',
         footerSources: 'Data sources: Fact-checking organizations including Facta.news, Pagella Politica, and BUTAC'
     },
@@ -59,6 +61,8 @@ const translations = {
         descriptionHeader: 'Descrizione',
         socialHeader: 'Social Media',
         noResults: 'Nessun risultato trovato',
+        ctaTitle: 'Agisci per una Migliore Informazione',
+        ctaText: 'Considera di <strong>smettere di seguire o essere critico delle fonti di disinformazione</strong> identificate qui sotto, e invece <strong>segui fonti affidabili e verificate</strong>. La tua dieta mediatica plasma la tua comprensione del mondo—scegli fonti che danno priorità all\'accuratezza e al fact-checking.',
         footerUpdated: 'Ultimo Aggiornamento: Gennaio 2025',
         footerSources: 'Fonti dati: Organizzazioni di fact-checking tra cui Facta.news, Pagella Politica e BUTAC'
     }
@@ -162,6 +166,8 @@ function updateLanguage() {
     document.getElementById('mainSubtitle').textContent = t.mainSubtitle;
     document.getElementById('disclaimerText').innerHTML = t.disclaimerText;
     document.getElementById('disclaimerContribute').innerHTML = t.disclaimerContribute;
+    document.getElementById('ctaTitle').textContent = t.ctaTitle;
+    document.getElementById('ctaText').innerHTML = t.ctaText;
     document.getElementById('search').placeholder = t.searchPlaceholder;
 
     // Update table headers - preserve the sorting structure

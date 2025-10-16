@@ -172,6 +172,54 @@ header h1 {
     text-decoration: underline;
 }
 
+/* CTA Section */
+.cta-section {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border: 2px solid #4caf50;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 35px;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.cta-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: #4caf50;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.cta-content {
+    flex: 1;
+}
+
+.cta-content h3 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1b5e20;
+}
+
+.cta-content p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2e7d32;
+}
+
+.cta-content strong {
+    font-weight: 700;
+    color: #1b5e20;
+}
+
 .page-toggle {
     background: white;
     border-radius: 8px;
@@ -992,7 +1040,29 @@ body.dark-mode .disclaimer-content strong {
     color: #e0e0e0;
 }
 
-/* Mobile responsive for disclaimer */
+body.dark-mode .cta-section {
+    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+    border-color: #4caf50;
+}
+
+body.dark-mode .cta-icon {
+    background: #4caf50;
+    color: #fff;
+}
+
+body.dark-mode .cta-content h3 {
+    color: #a5d6a7;
+}
+
+body.dark-mode .cta-content p {
+    color: #c8e6c9;
+}
+
+body.dark-mode .cta-content strong {
+    color: #e8f5e9;
+}
+
+/* Mobile responsive for disclaimer and CTA */
 @media (max-width: 768px) {
     .disclaimer {
         flex-direction: column;
@@ -1011,6 +1081,30 @@ body.dark-mode .disclaimer-content strong {
     }
 
     .disclaimer-content p {
+        font-size: 13px;
+    }
+
+    .cta-section {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .cta-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .cta-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .cta-content h3 {
+        font-size: 16px;
+    }
+
+    .cta-content p {
         font-size: 13px;
     }
 }
