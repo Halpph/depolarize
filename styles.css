@@ -128,6 +128,47 @@ header h1 {
     padding: 15px;
     margin-bottom: 20px;
     box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
+    position: relative;
+}
+
+.disclaimer.collapsed .disclaimer-content {
+    display: none;
+}
+
+.disclaimer-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #5d4e00;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.disclaimer-toggle:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .disclaimer-toggle {
+        display: flex;
+    }
+
+    .disclaimer {
+        padding-top: 50px;
+    }
+
+    .disclaimer.collapsed {
+        padding: 15px;
+    }
 }
 
 .disclaimer-icon {
@@ -190,6 +231,47 @@ header h1 {
     padding: 15px;
     margin-bottom: 20px;
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+    position: relative;
+}
+
+.cta-section.collapsed .cta-content {
+    display: none;
+}
+
+.cta-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #1b5e20;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.cta-toggle:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .cta-toggle {
+        display: flex;
+    }
+
+    .cta-section {
+        padding-top: 50px;
+    }
+
+    .cta-section.collapsed {
+        padding: 15px;
+    }
 }
 
 .cta-icon {

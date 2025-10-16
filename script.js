@@ -693,6 +693,22 @@ function toggleDescription(id) {
     }
 }
 
+// Toggle disclaimer visibility
+function toggleDisclaimer() {
+    const disclaimer = document.querySelector('.disclaimer');
+    const toggleBtn = document.querySelector('.disclaimer-toggle');
+    disclaimer.classList.toggle('collapsed');
+    toggleBtn.textContent = disclaimer.classList.contains('collapsed') ? '▶' : '▼';
+}
+
+// Toggle CTA visibility
+function toggleCTA() {
+    const cta = document.querySelector('.cta-section');
+    const toggleBtn = document.querySelector('.cta-toggle');
+    cta.classList.toggle('collapsed');
+    toggleBtn.textContent = cta.classList.contains('collapsed') ? '▶' : '▼';
+}
+
 // Load data when page loads
 initDarkMode();
 loadCSV();
