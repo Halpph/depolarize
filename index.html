@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depolarize - Italian Media Directory</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="language-toggle">
+                <button id="langBtn" class="lang-btn" onclick="toggleLanguage()">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+                    </svg>
+                    <span id="langText">IT</span>
+                </button>
+            </div>
+            <h1 id="mainTitle">Italian Media & Public Figures Directory</h1>
+            <p class="subtitle" id="mainSubtitle">A comprehensive list of Italian media outlets, politicians, and public figures with their social media presence</p>
+        </header>
+
+        <div class="page-toggle">
+            <h2 id="pageTitle">Misinformation Sources</h2>
+            <div class="toggle-buttons">
+                <button id="misinfoBtn" class="toggle-btn active" onclick="switchPage('misinformation')">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    Misinformation Sources
+                </button>
+                <button id="factualBtn" class="toggle-btn" onclick="switchPage('factual')">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                    Factual & Reliable Sources
+                </button>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="search" id="searchLabel">Search:</label>
+                <input type="text" id="search" placeholder="Search by name...">
+            </div>
+            <div class="filter-group">
+                <label for="typeFilter" id="typeLabel">Filter by Type:</label>
+                <select id="typeFilter">
+                    <option value="" id="allTypesOption">All Types</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter" id="categoryLabel">Filter by Category:</label>
+                <select id="categoryFilter">
+                    <option value="" id="allCategoriesOption">All Categories</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="stats">
+            <span id="totalCount">Loading...</span>
+        </div>
+
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th id="nameHeader">Name</th>
+                        <th id="typeHeader">Type</th>
+                        <th id="categoryHeader">Category</th>
+                        <th id="descriptionHeader">Description</th>
+                        <th id="socialHeader">Social Media</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p id="footerUpdated">Last Updated: January 2025</p>
+        <p id="footerSources">Data sources: Fact-checking organizations including Facta.news, Pagella Politica, and BUTAC</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
