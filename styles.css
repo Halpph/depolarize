@@ -50,20 +50,21 @@ header::before {
     z-index: 1;
 }
 
-.title-group {
+.hero-image-container {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
 }
 
-.logo-icon {
-    flex-shrink: 0;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-    width: 40px;
-    height: 40px;
+.hero-image {
+    max-width: 500px;
+    width: 100%;
+    height: auto;
     object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+    border-radius: 12px;
 }
 
 .header-controls {
@@ -102,12 +103,7 @@ header::before {
     flex-shrink: 0;
 }
 
-header h1 {
-    font-size: 1.8em;
-    margin: 0;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-}
+/* Removed h1 styling - using hero image instead */
 
 .subtitle {
     font-size: 0.9em;
@@ -1060,18 +1056,13 @@ footer p {
         display: none;
     }
 
-    .title-group {
-        flex-direction: column;
-        gap: 10px;
+    .hero-image-container {
+        margin-bottom: 15px;
     }
 
-    .logo-icon {
-        width: 36px;
-        height: 36px;
-    }
-
-    header h1 {
-        font-size: 1.6em;
+    .hero-image {
+        max-width: 100%;
+        border-radius: 8px;
     }
 
     .subtitle {
@@ -1154,6 +1145,10 @@ body.dark-mode .container {
 
 body.dark-mode header {
     background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+body.dark-mode .hero-image {
+    filter: brightness(1.1) drop-shadow(0 8px 20px rgba(255, 255, 255, 0.15));
 }
 
 body.dark-mode .page-toggle,

@@ -167,7 +167,11 @@ function toggleLanguage() {
 function updateLanguage() {
     const t = translations[currentLanguage];
 
-    document.getElementById('mainTitle').textContent = t.mainTitle;
+    // mainTitle element no longer exists (replaced with image)
+    const mainTitleEl = document.getElementById('mainTitle');
+    if (mainTitleEl) {
+        mainTitleEl.textContent = t.mainTitle;
+    }
     document.getElementById('mainSubtitle').textContent = t.mainSubtitle;
     document.getElementById('disclaimerText').innerHTML = t.disclaimerText;
     document.getElementById('disclaimerContribute').innerHTML = t.disclaimerContribute;
