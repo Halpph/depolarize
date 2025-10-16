@@ -59,7 +59,7 @@ header::before {
 }
 
 .hero-image {
-    max-width: 500px;
+    max-width: 400px;
     width: 100%;
     height: auto;
     object-fit: contain;
@@ -1061,7 +1061,7 @@ footer p {
     }
 
     .hero-image {
-        max-width: 100%;
+        max-width: 280px;
         border-radius: 8px;
     }
 
