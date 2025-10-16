@@ -6,6 +6,11 @@ let currentLanguage = 'en'; // 'en' or 'it'
 let currentSort = { column: null, ascending: true };
 let darkMode = false;
 
+// Pagination
+let currentPaginationPage = 1;
+let itemsPerPage = 50;
+let totalPages = 1;
+
 // Translations
 const translations = {
     en: {
@@ -261,6 +266,78 @@ function populateFilters() {
     });
 }
 
+// Get paginated data
+function getPaginatedData() {
+    if (itemsPerPage === 'all') {
+        return filteredData;
+    }
+    const startIndex = (currentPaginationPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+}
+
+// Update pagination controls
+function updatePaginationControls() {
+    if (itemsPerPage === 'all') {
+        totalPages = 1;
+        currentPaginationPage = 1;
+    } else {
+        totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        if (currentPaginationPage > totalPages) {
+            currentPaginationPage = totalPages || 1;
+        }
+    }
+
+    const pageInfo = document.getElementById('pageInfo');
+    const firstPageBtn = document.getElementById('firstPageBtn');
+    const prevPageBtn = document.getElementById('prevPageBtn');
+    const nextPageBtn = document.getElementById('nextPageBtn');
+    const lastPageBtn = document.getElementById('lastPageBtn');
+
+    if (itemsPerPage === 'all') {
+        pageInfo.textContent = `Showing all ${filteredData.length} items`;
+        firstPageBtn.disabled = true;
+        prevPageBtn.disabled = true;
+        nextPageBtn.disabled = true;
+        lastPageBtn.disabled = true;
+    } else {
+        const startItem = (currentPaginationPage - 1) * itemsPerPage + 1;
+        const endItem = Math.min(currentPaginationPage * itemsPerPage, filteredData.length);
+        pageInfo.textContent = `Page ${currentPaginationPage} of ${totalPages} (${startItem}-${endItem} of ${filteredData.length})`;
+
+        firstPageBtn.disabled = currentPaginationPage === 1;
+        prevPageBtn.disabled = currentPaginationPage === 1;
+        nextPageBtn.disabled = currentPaginationPage === totalPages;
+        lastPageBtn.disabled = currentPaginationPage === totalPages;
+    }
+
+    // Scroll to top of table when changing pages
+    const tableContainer = document.querySelector('.table-container');
+    if (tableContainer) {
+        tableContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+// Go to specific page
+function goToPage(page) {
+    if (page < 1 || page > totalPages) return;
+    currentPaginationPage = page;
+    renderTable();
+    renderCards();
+    updatePaginationControls();
+}
+
+// Change page size
+function changePageSize() {
+    const pageSizeSelect = document.getElementById('pageSize');
+    const value = pageSizeSelect.value;
+    itemsPerPage = value === 'all' ? 'all' : parseInt(value);
+    currentPaginationPage = 1;
+    renderTable();
+    renderCards();
+    updatePaginationControls();
+}
+
 // Render cards
 function renderCards() {
     const t = translations[currentLanguage];
@@ -268,6 +345,7 @@ function renderCards() {
 
     if (filteredData.length === 0) {
         cardsContainer.innerHTML = `<div style="text-align: center; color: #999; padding: 40px; background: white; border-radius: 8px;">${t.noResults}</div>`;
+        updatePaginationControls();
         return;
     }
 
@@ -275,7 +353,11 @@ function renderCards() {
     const typeKey = currentLanguage === 'it' ? 'Type_IT' : 'Type';
     const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
 
-    cardsContainer.innerHTML = filteredData.map(entry => {
+    const paginatedData = getPaginatedData();
+    const startIndex = itemsPerPage === 'all' ? 0 : (currentPaginationPage - 1) * itemsPerPage;
+
+    cardsContainer.innerHTML = paginatedData.map((entry, index) => {
+        const rank = startIndex + index + 1;
         const socialButtons = [];
 
         if (entry.Facebook) {
@@ -328,7 +410,7 @@ function renderCards() {
         return `
             <div class="card">
                 <div class="card-header">
-                    <div class="card-id">#${entry.ID}</div>
+                    <div class="card-id">#${rank}</div>
                     <h3 class="card-name">${entry.Name}</h3>
                     ${scoreHTML}
                     <div class="card-badges">
@@ -349,6 +431,7 @@ function renderCards() {
             </div>
         `;
     }).join('');
+    updatePaginationControls();
 }
 
 // Render table
@@ -358,6 +441,7 @@ function renderTable() {
 
     if (filteredData.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #999; padding: 40px;">${t.noResults}</td></tr>`;
+        updatePaginationControls();
         return;
     }
 
@@ -365,7 +449,11 @@ function renderTable() {
     const typeKey = currentLanguage === 'it' ? 'Type_IT' : 'Type';
     const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
 
-    tableBody.innerHTML = filteredData.map(entry => {
+    const paginatedData = getPaginatedData();
+    const startIndex = itemsPerPage === 'all' ? 0 : (currentPaginationPage - 1) * itemsPerPage;
+
+    tableBody.innerHTML = paginatedData.map((entry, index) => {
+        const rank = startIndex + index + 1;
         const socialButtons = [];
 
         if (entry.Facebook) {
@@ -420,7 +508,7 @@ function renderTable() {
 
         return `
             <tr>
-                <td>${entry.ID}</td>
+                <td>${rank}</td>
                 <td>
                     <strong>${entry.Name}</strong>
                     ${scoreHTML}
@@ -432,6 +520,7 @@ function renderTable() {
             </tr>
         `;
     }).join('');
+    updatePaginationControls();
 }
 
 // Update statistics
@@ -499,6 +588,9 @@ function switchPage(page) {
     document.getElementById('typeFilter').value = '';
     document.getElementById('categoryFilter').value = '';
 
+    // Reset pagination
+    currentPaginationPage = 1;
+
     // Update data and UI
     filteredData = getPageData();
     populateFilters();
@@ -527,6 +619,9 @@ function filterData() {
 
         return matchesSearch && matchesType && matchesCategory;
     });
+
+    // Reset to first page when filtering
+    currentPaginationPage = 1;
 
     updateFilterBadge();
     renderTable();
@@ -606,6 +701,9 @@ function sortTable(column) {
         if (valA > valB) return currentSort.ascending ? 1 : -1;
         return 0;
     });
+
+    // Reset to first page after sorting
+    currentPaginationPage = 1;
 
     // Update sort indicators
     document.querySelectorAll('thead th.sortable').forEach(th => {

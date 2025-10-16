@@ -38,39 +38,16 @@
             </div>
         </header>
 
-        <div class="disclaimer">
-            <button class="disclaimer-toggle" onclick="toggleDisclaimer()" title="Toggle disclaimer">▼</button>
-            <div class="disclaimer-icon">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V6h2v6z"/>
+        <div class="search-section">
+            <div class="search-container">
+                <svg class="search-icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                 </svg>
-            </div>
-            <div class="disclaimer-content">
-                <p id="disclaimerText">
-                    <strong>Disclaimer:</strong> The information in this directory has been gathered from external fact-checking organizations and public sources. The categorizations and reliability scores represent aggregated assessments from these sources and do not reflect my personal judgment. This is an educational resource intended to help users make informed decisions about their media consumption.
-                </p>
-                <p id="disclaimerContribute">
-                    Want to contribute? This is a community-driven project. You can submit corrections or additions via pull request on <a href="https://github.com/Halpph/depolarize" target="_blank">GitHub</a>.
-                </p>
+                <input type="text" id="search" placeholder="Cerca giornale o politico...">
             </div>
         </div>
 
-        <div class="cta-section">
-            <button class="cta-toggle" onclick="toggleCTA()" title="Toggle call-to-action">▼</button>
-            <div class="cta-icon">
-                <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-            </div>
-            <div class="cta-content">
-                <h3 id="ctaTitle">Take Action for Better Information</h3>
-                <p id="ctaText">
-                    Consider <strong>unfollowing or being critical of misinformation sources</strong> identified below, and instead <strong>follow factual and reliable sources</strong>. Your media diet shapes your understanding of the world—choose sources that prioritize accuracy and fact-checking.
-                </p>
-            </div>
-        </div>
-
-        <div class="page-toggle">
+        <div class="page-toggle-compact">
             <h2 id="pageTitle">Misinformation Sources</h2>
             <div class="toggle-buttons">
                 <button id="misinfoBtn" class="toggle-btn active" onclick="switchPage('misinformation')">
@@ -85,15 +62,6 @@
                     </svg>
                     Factual & Reliable Sources
                 </button>
-            </div>
-        </div>
-
-        <div class="search-section">
-            <div class="search-container">
-                <svg class="search-icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                </svg>
-                <input type="text" id="search" placeholder="Cerca giornale o politico...">
             </div>
         </div>
 
@@ -127,6 +95,21 @@
             </button>
         </div>
 
+        <div class="cta-section">
+            <button class="cta-toggle" onclick="toggleCTA()" title="Toggle call-to-action">▼</button>
+            <div class="cta-icon">
+                <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+            </div>
+            <div class="cta-content">
+                <h3 id="ctaTitle">Take Action for Better Information</h3>
+                <p id="ctaText">
+                    Consider <strong>unfollowing or being critical of misinformation sources</strong> identified below, and instead <strong>follow factual and reliable sources</strong>. Your media diet shapes your understanding of the world—choose sources that prioritize accuracy and fact-checking.
+                </p>
+            </div>
+        </div>
+
         <div class="stats">
             <span id="totalCount">Loading...</span>
         </div>
@@ -135,7 +118,7 @@
             <table id="dataTable">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th id="nameHeader" class="sortable" onclick="sortTable('name')">
                             <span>Name</span>
                             <svg class="sort-icon" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
@@ -166,6 +149,58 @@
 
         <div class="cards-container" id="cardsContainer">
             <!-- Cards will be inserted here by JavaScript on mobile -->
+        </div>
+
+        <div class="pagination-container">
+            <div class="pagination-info">
+                <label for="pageSize" id="pageSizeLabel">Items per page:</label>
+                <select id="pageSize" onchange="changePageSize()">
+                    <option value="25">25</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+            <div class="pagination-controls">
+                <button id="firstPageBtn" onclick="goToPage(1)" title="First page">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z"/>
+                    </svg>
+                </button>
+                <button id="prevPageBtn" onclick="goToPage(currentPaginationPage - 1)" title="Previous page">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    </svg>
+                </button>
+                <span id="pageInfo" class="page-info">Page 1 of 1</span>
+                <button id="nextPageBtn" onclick="goToPage(currentPaginationPage + 1)" title="Next page">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                </button>
+                <button id="lastPageBtn" onclick="goToPage(totalPages)" title="Last page">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <button class="disclaimer-toggle" onclick="toggleDisclaimer()" title="Toggle disclaimer">▼</button>
+            <div class="disclaimer-icon">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V6h2v6z"/>
+                </svg>
+            </div>
+            <div class="disclaimer-content">
+                <p id="disclaimerText">
+                    <strong>Disclaimer:</strong> The information in this directory has been gathered from external fact-checking organizations and public sources. The categorizations and reliability scores represent aggregated assessments from these sources and do not reflect my personal judgment. This is an educational resource intended to help users make informed decisions about their media consumption.
+                </p>
+                <p id="disclaimerContribute">
+                    Want to contribute? This is a community-driven project. You can submit corrections or additions via pull request on <a href="https://github.com/Halpph/depolarize" target="_blank">GitHub</a>.
+                </p>
+            </div>
         </div>
     </div>
 
