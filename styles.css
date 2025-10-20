@@ -1085,11 +1085,46 @@ footer p {
     }
 
     .filters {
-        flex-direction: column;
+        padding: 10px;
+        gap: 10px;
     }
 
-    .filter-group {
-        min-width: 100%;
+    .filters-left {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .filter-group.compact {
+        min-width: auto;
+    }
+
+    .filter-group.compact select {
+        padding: 8px 8px 8px 32px;
+        font-size: 12px;
+        padding-right: 25px;
+        background-position: right 8px center;
+    }
+
+    .filter-icon {
+        left: 8px;
+        width: 16px;
+        height: 16px;
+    }
+
+    .filter-badge {
+        grid-column: 1 / -1;
+        justify-content: center;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .reset-filters-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 16px;
+        font-size: 13px;
     }
 
     .container {
@@ -1408,27 +1443,47 @@ body.dark-mode .legend-mini-link:hover {
     }
 
     .cta-section {
-        flex-direction: column;
-        gap: 15px;
-        padding: 20px;
+        flex-direction: row;
+        gap: 10px;
+        padding: 12px;
+        align-items: center;
     }
 
     .cta-icon {
-        width: 40px;
-        height: 40px;
+        width: 28px;
+        height: 28px;
+        flex-shrink: 0;
     }
 
     .cta-icon svg {
-        width: 22px;
-        height: 22px;
+        width: 16px;
+        height: 16px;
+    }
+
+    .cta-content {
+        flex: 1;
     }
 
     .cta-content h3 {
-        font-size: 16px;
+        font-size: 13px;
+        margin-bottom: 4px;
     }
 
     .cta-content p {
-        font-size: 13px;
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .cta-section.collapsed {
+        padding: 12px;
+    }
+
+    .cta-toggle {
+        top: 10px;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        font-size: 16px;
     }
 }
 
