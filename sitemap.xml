@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Main page with language alternates -->
+  <url>
+    <loc>https://halpph.github.io/depolarize/</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+
+    <!-- Alternate language versions -->
+    <xhtml:link rel="alternate" hreflang="en" href="https://halpph.github.io/depolarize/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://halpph.github.io/depolarize/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://halpph.github.io/depolarize/" />
+
+    <!-- Images -->
+    <image:image>
+      <image:loc>https://halpph.github.io/depolarize/depolarize.png</image:loc>
+      <image:title>Depolarize - Italian Media Bias Directory</image:title>
+      <image:caption>Depolarize your feed, reclaim your mind</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Data file -->
+  <url>
+    <loc>https://halpph.github.io/depolarize/list.csv</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- GitHub repository -->
+  <url>
+    <loc>https://github.com/Halpph/depolarize</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

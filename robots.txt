@@ -1,0 +1,44 @@
+# robots.txt for Depolarize - Italian Media Directory
+# https://halpph.github.io/depolarize/
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://halpph.github.io/depolarize/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Disallow specific files that shouldn't be indexed
+Disallow: /*.json$
+Disallow: /*.py$
+Disallow: /*.md$
+
+# Allow important files
+Allow: /list.csv
+Allow: /depolarize.png
+Allow: /styles.css
+Allow: /script.js
+
+# Popular search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
