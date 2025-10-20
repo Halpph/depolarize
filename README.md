@@ -8,14 +8,23 @@ A bilingual (English/Italian) website displaying information about Italian media
 - **Two-Page System**:
   - Misinformation Sources (scores > 3)
   - Factual & Reliable Sources (scores ≤ 3)
+- **📊 Interactive Scoring Legend** (NEW!):
+  - Visual color-coded scale showing rating methodology
+  - Compact version embedded in main page with expand/collapse
+  - Detailed standalone page ([scoring-legend.html](scoring-legend.html)) with:
+    - Visual gradient scale bar (green → red)
+    - 5 score categories with real examples
+    - Two-dimensional rating explanation (Misinformation + Hate Speech)
+    - Methodology and fact-checking sources
+    - Bilingual (EN/IT) with language toggle
 - **Danger Score Indicators**: Visual color-coded scores for misinformation and hate speech (1-10 scale)
-  - 🟢 Minimal (1-2): Green
-  - 🟡 Low (3-4): Yellow
-  - 🟠 Medium (5-6): Orange
-  - 🔴 High (7-8): Red
-  - ⚫ Extreme (9-10): Dark red with pulsing animation
+  - 🟢 Highly Credible (1-2): Green
+  - 🔵 Generally Reliable (3-4): Blue
+  - 🟡 Moderate Issues (5-6): Yellow
+  - 🟠 Serious Problems (7-8): Orange
+  - 🔴 Extreme Problems (9-10): Red/Dark red with pulsing animation
 - **Search functionality**: Search by name
-- **Filter options**: Filter by Type and Category
+- **Filter options**: Filter by Type, Category, and Language
 - **Social media links**: Direct links to Facebook and Instagram profiles (only shows entries with social media)
 - **Detailed descriptions**: Context about why sources are reliable or unreliable
 - **Responsive design**: Works perfectly on desktop, tablet, and mobile devices
@@ -49,10 +58,13 @@ A bilingual (English/Italian) website displaying information about Italian media
 
 ## Files Structure
 
-- `index.html` - Main HTML structure with bilingual support
-- `styles.css` - All styling, responsive design, and score indicators
+- `index.html` - Main HTML structure with bilingual support and embedded scoring legend
+- `scoring-legend.html` - **NEW!** Detailed standalone scoring methodology page
+- `styles.css` - All styling, responsive design, score indicators, and legend styles
 - `script.js` - JavaScript for CSV parsing, filtering, translations, and dynamic rendering
-- `list.csv` - Data source with information about media and public figures
+- `list.csv` - Data source with information about media and public figures (155+ entries)
+- `ADDING_ENTRIES_GUIDE.md` - **NEW!** Comprehensive guide for adding new entries to the database
+- `CHANGELOG.md` - **NEW!** Version history and recent updates
 - `README.md` - This file
 
 ## How It Works
@@ -103,14 +115,22 @@ Install the "Live Server" extension and right-click on index.html → "Open with
 
 ## Database Statistics
 
-- **Total Entries**: 223 sources
-- **Individuals**: 191 (media figures, politicians, journalists, activists, influencers)
-- **Organizations**: 32 (parties, unions, NGOs, associations, movements)
-- **With Social Media**: ~195 entries (displayed on website)
-- **Categories**: Media outlets, political parties, journalists, politicians, labor unions, NGOs, humanitarian organizations, environmental groups, anti-mafia associations, LGBTQ+ rights groups, business associations, religious organizations, youth movements, fact-checkers, historians, scientists, satirists
-- **Coverage**: From extreme far-right (score 10/10) to international NGOs and academic authorities (score 1/1)
-- **Languages**: Full bilingual support (English/Italian)
-- **Political Spectrum**: Complete coverage from far-right to left including all major Italian political parties and civil society organizations
+- **Total Entries**: 155+ sources (updated January 2025)
+- **Types**: Media, Journalists, Politicians, Activists, UN Officials, Social Media Pages, Organizations, etc.
+- **Categories**: Complete political spectrum coverage
+  - Far-Right (Estrema Destra)
+  - Right (Destra)
+  - Center-Right (Centro-Destra)
+  - Center (Centro)
+  - Center-Left (Centro-Sinistra)
+  - Left (Sinistra)
+  - Populist, Pro-Russia categories
+- **Score Range**: 1-10 on two independent dimensions
+  - Misinformation Score: From highly credible (1) to extreme propaganda (10)
+  - Hate Speech Score: From respectful discourse (1) to extreme hate (10)
+- **Recent Additions**: Karem Rohana, Francesca Albanese, Benjamin Netanyahu, Vladimir Putin, Francesco Giubilei
+- **Languages**: Italian (IT) and English (EN) sources with Italian relevance
+- **Data Sources**: Fact-checks from Pagella Politica, Facta.news, BUTAC, NewsGuard, Reuters, and other verified organizations
 
 ## Data Format
 

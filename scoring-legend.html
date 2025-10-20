@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depolarize Scoring Legend - Understanding Reliability Ratings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .legend-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .legend-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .legend-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .legend-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .legend-content {
+            padding: 3rem 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #1a202c;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .scoring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .score-category {
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--category-color);
+        }
+
+        .score-category:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-range {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .score-badge {
+            background: var(--category-color);
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .score-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .score-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .score-examples {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .score-examples-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-examples-list {
+            list-style: none;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .score-examples-list li {
+            padding: 0.25rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .score-examples-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--category-color);
+            font-weight: 700;
+        }
+
+        /* Color themes for different score ranges */
+        .highly-credible {
+            --category-color: #10b981;
+        }
+
+        .generally-reliable {
+            --category-color: #3b82f6;
+        }
+
+        .moderate-issues {
+            --category-color: #f59e0b;
+        }
+
+        .serious-problems {
+            --category-color: #ef4444;
+        }
+
+        .extreme-problems {
+            --category-color: #991b1b;
+        }
+
+        .methodology {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .methodology h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 1rem;
+        }
+
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .methodology-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .methodology-item h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .methodology-item p {
+            font-size: 0.9rem;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .visual-scale {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: #f7fafc;
+            border-radius: 16px;
+        }
+
+        .scale-bar {
+            height: 60px;
+            background: linear-gradient(90deg,
+                #10b981 0%,
+                #10b981 20%,
+                #3b82f6 20%,
+                #3b82f6 40%,
+                #f59e0b 40%,
+                #f59e0b 60%,
+                #ef4444 60%,
+                #ef4444 80%,
+                #991b1b 80%,
+                #991b1b 100%);
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding: 0 1rem;
+        }
+
+        .scale-label {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .scale-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a202c;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .two-dimensional {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .two-dimensional h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 1rem;
+        }
+
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .dimension-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .dimension-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .dimension-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .dimension-description {
+            color: #4a5568;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .legend-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .legend-header p {
+                font-size: 1rem;
+            }
+
+            .legend-content {
+                padding: 2rem 1rem;
+            }
+
+            .scoring-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .methodology-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dimensions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .lang-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .lang-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        [lang="it"] .en-only { display: none; }
+        [lang="en"] .it-only { display: none; }
+    </style>
+</head>
+<body lang="en">
+    <button class="lang-toggle" onclick="toggleLanguage()">
+        <span class="en-only">🇮🇹 Italiano</span>
+        <span class="it-only">🇬🇧 English</span>
+    </button>
+
+    <div class="legend-container">
+        <div class="legend-header">
+            <h1>
+                <span class="en-only">📊 Understanding Our Scoring System</span>
+                <span class="it-only">📊 Come Funzionano i Nostri Punteggi</span>
+            </h1>
+            <p class="en-only">
+                Depolarize rates Italian media sources, politicians, and public figures on two independent dimensions:
+                <strong>Misinformation</strong> and <strong>Hate Speech</strong>. Lower scores indicate higher credibility
+                and more respectful discourse. Here's how to interpret the ratings.
+            </p>
+            <p class="it-only">
+                Depolarize valuta fonti mediatiche italiane, politici e personaggi pubblici su due dimensioni indipendenti:
+                <strong>Disinformazione</strong> e <strong>Incitamento all'odio</strong>. Punteggi più bassi indicano maggiore credibilità
+                e un discorso più rispettoso. Ecco come interpretare le valutazioni.
+            </p>
+        </div>
+
+        <div class="legend-content">
+            <!-- Visual Scale -->
+            <div class="visual-scale">
+                <h2 class="section-title">
+                    <span class="en-only">Rating Scale at a Glance</span>
+                    <span class="it-only">Scala di Valutazione a Colpo d'Occhio</span>
+                </h2>
+                <div class="scale-bar"></div>
+                <div class="scale-labels">
+                    <div class="scale-label">
+                        <span class="scale-number">1-2</span>
+                        <span class="en-only">Highly<br>Credible</span>
+                        <span class="it-only">Altamente<br>Credibile</span>
+                    </div>
+                    <div class="scale-label">
+                        <span class="scale-number">3-4</span>
+                        <span class="en-only">Generally<br>Reliable</span>
+                        <span class="it-only">Generalmente<br>Affidabile</span>
+                    </div>
+                    <div class="scale-label">
+                        <span class="scale-number">5-6</span>
+                        <span class="en-only">Moderate<br>Issues</span>
+                        <span class="it-only">Problemi<br>Moderati</span>
+                    </div>
+                    <div class="scale-label">
+                        <span class="scale-number">7-8</span>
+                        <span class="en-only">Serious<br>Problems</span>
+                        <span class="it-only">Problemi<br>Seri</span>
+                    </div>
+                    <div class="scale-label">
+                        <span class="scale-number">9-10</span>
+                        <span class="en-only">Extreme<br>Problems</span>
+                        <span class="it-only">Problemi<br>Estremi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Misinformation Scores -->
+            <h2 class="section-title">
+                <span class="en-only">🎯 Misinformation Score (1-10)</span>
+                <span class="it-only">🎯 Punteggio Disinformazione (1-10)</span>
+            </h2>
+
+            <div class="scoring-grid">
+                <div class="score-category highly-credible">
+                    <div class="score-range">
+                        <div class="score-badge">1-2</div>
+                        <div class="score-label">
+                            <span class="en-only">Highly Credible</span>
+                            <span class="it-only">Altamente Credibile</span>
+                        </div>
+                    </div>
+                    <p class="score-description en-only">
+                        Fact-based reporting with professional standards. Rare errors that are quickly corrected.
+                        Strong commitment to accuracy and transparency.
+                    </p>
+                    <p class="score-description it-only">
+                        Informazione basata sui fatti con standard professionali. Errori rari che vengono corretti rapidamente.
+                        Forte impegno per l'accuratezza e la trasparenza.
+                    </p>
+                    <div class="score-examples">
+                        <div class="score-examples-title">
+                            <span class="en-only">Examples</span>
+                            <span class="it-only">Esempi</span>
+                        </div>
+                        <ul class="score-examples-list">
+                            <li>Marco Cappato (2)</li>
+                            <li>Matteo Hallissey (2)</li>
+                            <li>CNN (3)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="score-category generally-reliable">
+                    <div class="score-range">
+                        <div class="score-badge">3-4</div>
+                        <div class="score-label">
+                            <span class="en-only">Generally Reliable</span>
+                            <span class="it-only">Generalmente Affidabile</span>
+                        </div>
+                    </div>
+                    <p class="score-description en-only">
+                        Mostly accurate with occasional inaccuracies or bias. Generally maintains journalistic standards
+                        but may show political leanings or make occasional errors.
+                    </p>
+                    <p class="score-description it-only">
+                        Principalmente accurato con occasionali imprecisioni o parzialità. Generalmente mantiene standard
+                        giornalistici ma può mostrare tendenze politiche o commettere errori occasionali.
+                    </p>
+                    <div class="score-examples">
+                        <div class="score-examples-title">
+                            <span class="en-only">Examples</span>
+                            <span class="it-only">Esempi</span>
+                        </div>
+                        <ul class="score-examples-list">
+                            <li>Karem Rohana (3)</li>
+                            <li>Francesca Albanese (4)</li>
+                            <li>RAI 3 (4)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="score-category moderate-issues">
+                    <div class="score-range">
+                        <div class="score-badge">5-6</div>
+                        <div class="score-label">
+                            <span class="en-only">Moderate Issues</span>
+                            <span class="it-only">Problemi Moderati</span>
+                        </div>
+                    </div>
+                    <p class="score-description en-only">
+                        Frequent inaccuracies or significant bias. Multiple fact-checks found errors in statistics,
+                        statements, or coverage. Sensationalist approach common.
+                    </p>
+                    <p class="score-description it-only">
+                        Frequenti imprecisioni o significativa parzialità. Molteplici fact-check hanno trovato errori
+                        in statistiche, dichiarazioni o copertura. Approccio sensazionalistico comune.
+                    </p>
+                    <div class="score-examples">
+                        <div class="score-examples-title">
+                            <span class="en-only">Examples</span>
+                            <span class="it-only">Esempi</span>
+                        </div>
+                        <ul class="score-examples-list">
+                            <li>Francesco Giubilei (5)</li>
+                            <li>Matteo Renzi (6)</li>
+                            <li>Giorgia Meloni (6)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="score-category serious-problems">
+                    <div class="score-range">
+                        <div class="score-badge">7-8</div>
+                        <div class="score-label">
+                            <span class="en-only">Serious Problems</span>
+                            <span class="it-only">Problemi Seri</span>
+                        </div>
+                    </div>
+                    <p class="score-description en-only">
+                        Regular misinformation and conspiracy theories. Pattern of false claims documented by
+                        multiple fact-checkers. May include professional sanctions or legal issues.
+                    </p>
+                    <p class="score-description it-only">
+                        Disinformazione regolare e teorie del complotto. Pattern di affermazioni false documentato
+                        da molteplici fact-checker. Può includere sanzioni professionali o problemi legali.
+                    </p>
+                    <div class="score-examples">
+                        <div class="score-examples-title">
+                            <span class="en-only">Examples</span>
+                            <span class="it-only">Esempi</span>
+                        </div>
+                        <ul class="score-examples-list">
+                            <li>Diego Fusaro (8)</li>
+                            <li>Benjamin Netanyahu (8)</li>
+                            <li>Mario Giordano (8)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="score-category extreme-problems">
+                    <div class="score-range">
+                        <div class="score-badge">9-10</div>
+                        <div class="score-label">
+                            <span class="en-only">Extreme Problems</span>
+                            <span class="it-only">Problemi Estremi</span>
+                        </div>
+                    </div>
+                    <p class="score-description en-only">
+                        Systematic disinformation and propaganda. Consistently spreads false information,
+                        conspiracy theories, and manipulated content. Among the most problematic sources.
+                    </p>
+                    <p class="score-description it-only">
+                        Disinformazione sistematica e propaganda. Diffonde costantemente informazioni false,
+                        teorie del complotto e contenuti manipolati. Tra le fonti più problematiche.
+                    </p>
+                    <div class="score-examples">
+                        <div class="score-examples-title">
+                            <span class="en-only">Examples</span>
+                            <span class="it-only">Esempi</span>
+                        </div>
+                        <ul class="score-examples-list">
+                            <li>VoxNews (10)</li>
+                            <li>Vladimir Putin (10)</li>
+                            <li>Tucker Carlson (9)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Dimensions Explanation -->
+            <div class="two-dimensional">
+                <h3>
+                    <span class="en-only">⚖️ Two Independent Dimensions</span>
+                    <span class="it-only">⚖️ Due Dimensioni Indipendenti</span>
+                </h3>
+                <p class="en-only" style="margin-bottom: 1.5rem; color: #78350f; line-height: 1.6;">
+                    We evaluate sources on two separate scales because misinformation and hate speech are distinct issues.
+                    A source can be factually accurate but use hateful rhetoric, or spread false information without targeting specific groups.
+                </p>
+                <p class="it-only" style="margin-bottom: 1.5rem; color: #78350f; line-height: 1.6;">
+                    Valutiamo le fonti su due scale separate perché disinformazione e incitamento all'odio sono questioni distinte.
+                    Una fonte può essere fattualmente accurata ma usare retorica d'odio, o diffondere informazioni false senza prendere di mira gruppi specifici.
+                </p>
+                <div class="dimensions-grid">
+                    <div class="dimension-card">
+                        <div class="dimension-icon">📰</div>
+                        <div class="dimension-title">
+                            <span class="en-only">Misinformation Score</span>
+                            <span class="it-only">Punteggio Disinformazione</span>
+                        </div>
+                        <p class="dimension-description en-only">
+                            Measures accuracy, fact-checking record, conspiracy theories, and overall credibility.
+                            Based on documented fact-checks from trusted sources like Pagella Politica, Facta.news, and BUTAC.
+                        </p>
+                        <p class="dimension-description it-only">
+                            Misura accuratezza, storico di fact-checking, teorie del complotto e credibilità complessiva.
+                            Basato su fact-check documentati da fonti affidabili come Pagella Politica, Facta.news e BUTAC.
+                        </p>
+                    </div>
+                    <div class="dimension-card">
+                        <div class="dimension-icon">💬</div>
+                        <div class="dimension-title">
+                            <span class="en-only">Hate Speech Score</span>
+                            <span class="it-only">Punteggio Incitamento all'Odio</span>
+                        </div>
+                        <p class="dimension-description en-only">
+                            Evaluates discriminatory language, racism, xenophobia, Islamophobia, antisemitism, and other forms of hate speech.
+                            Based on documented incidents, sanctions, and court rulings.
+                        </p>
+                        <p class="dimension-description it-only">
+                            Valuta linguaggio discriminatorio, razzismo, xenofobia, islamofobia, antisemitismo e altre forme di incitamento all'odio.
+                            Basato su incidenti documentati, sanzioni e sentenze giudiziarie.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Methodology -->
+            <div class="methodology">
+                <h3>
+                    <span class="en-only">🔬 Our Methodology</span>
+                    <span class="it-only">🔬 La Nostra Metodologia</span>
+                </h3>
+                <p class="en-only" style="margin-bottom: 1rem; color: #1e40af; line-height: 1.6;">
+                    All ratings are evidence-based and derived from reputable fact-checking organizations, court rulings,
+                    professional sanctions, and documented incidents. We prioritize transparency and verifiable sources.
+                </p>
+                <p class="it-only" style="margin-bottom: 1rem; color: #1e40af; line-height: 1.6;">
+                    Tutte le valutazioni sono basate su evidenze e derivate da organizzazioni di fact-checking affidabili,
+                    sentenze giudiziarie, sanzioni professionali e incidenti documentati. Diamo priorità a trasparenza e fonti verificabili.
+                </p>
+                <div class="methodology-grid">
+                    <div class="methodology-item">
+                        <h4>
+                            <span class="en-only">📚 Trusted Sources</span>
+                            <span class="it-only">📚 Fonti Affidabili</span>
+                        </h4>
+                        <p class="en-only">
+                            Pagella Politica, Facta.news, BUTAC, NewsGuard, Reuters Fact Check, and other verified fact-checking organizations.
+                        </p>
+                        <p class="it-only">
+                            Pagella Politica, Facta.news, BUTAC, NewsGuard, Reuters Fact Check e altre organizzazioni verificate di fact-checking.
+                        </p>
+                    </div>
+                    <div class="methodology-item">
+                        <h4>
+                            <span class="en-only">⚖️ Legal Evidence</span>
+                            <span class="it-only">⚖️ Prove Legali</span>
+                        </h4>
+                        <p class="en-only">
+                            Court rulings, sanctions from professional journalist associations, and documented legal proceedings.
+                        </p>
+                        <p class="it-only">
+                            Sentenze giudiziarie, sanzioni da associazioni professionali di giornalisti e procedimenti legali documentati.
+                        </p>
+                    </div>
+                    <div class="methodology-item">
+                        <h4>
+                            <span class="en-only">🎯 Independent Evaluation</span>
+                            <span class="it-only">🎯 Valutazione Indipendente</span>
+                        </h4>
+                        <p class="en-only">
+                            Each dimension (misinformation and hate speech) is scored independently based on specific criteria.
+                        </p>
+                        <p class="it-only">
+                            Ogni dimensione (disinformazione e incitamento all'odio) è valutata indipendentemente in base a criteri specifici.
+                        </p>
+                    </div>
+                    <div class="methodology-item">
+                        <h4>
+                            <span class="en-only">🔄 Regular Updates</span>
+                            <span class="it-only">🔄 Aggiornamenti Regolari</span>
+                        </h4>
+                        <p class="en-only">
+                            Ratings are updated as new fact-checks, legal rulings, or documented incidents emerge.
+                        </p>
+                        <p class="it-only">
+                            Le valutazioni vengono aggiornate man mano che emergono nuovi fact-check, sentenze legali o incidenti documentati.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="index.html" class="cta-button">
+                    <span class="en-only">← Back to Database</span>
+                    <span class="it-only">← Torna al Database</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            const body = document.body;
+            const currentLang = body.getAttribute('lang');
+            body.setAttribute('lang', currentLang === 'en' ? 'it' : 'en');
+            localStorage.setItem('depolarize-lang', currentLang === 'en' ? 'it' : 'en');
+        }
+
+        // Load saved language preference
+        const savedLang = localStorage.getItem('depolarize-lang');
+        if (savedLang) {
+            document.body.setAttribute('lang', savedLang);
+        }
+    </script>
+</body>
+</html>

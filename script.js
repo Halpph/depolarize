@@ -852,6 +852,18 @@ function toggleCTA() {
     toggleBtn.textContent = cta.classList.contains('collapsed') ? '▶' : '▼';
 }
 
+// Toggle Legend visibility
+function toggleLegend() {
+    const legend = document.querySelector('.scoring-legend-compact');
+    const toggleBtn = document.querySelector('.legend-toggle');
+    const content = document.querySelector('.scoring-legend-compact .legend-content');
+
+    legend.classList.toggle('collapsed');
+    content.classList.toggle('collapsed');
+    toggleBtn.classList.toggle('collapsed');
+    toggleBtn.textContent = legend.classList.contains('collapsed') ? '▶' : '▼';
+}
+
 // Load data when page loads
 initDarkMode();
 loadCSV();
