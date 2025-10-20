@@ -177,6 +177,9 @@ function toggleLanguage() {
 function updateLanguage() {
     const t = translations[currentLanguage];
 
+    // Update data-lang attribute on body for CSS language switching
+    document.body.setAttribute('data-lang', currentLanguage);
+
     // mainTitle element no longer exists (replaced with image)
     const mainTitleEl = document.getElementById('mainTitle');
     if (mainTitleEl) {
