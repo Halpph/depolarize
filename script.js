@@ -26,8 +26,13 @@ const translations = {
         searchPlaceholder: 'Search by name...',
         typeLabel: 'Filter by Type:',
         categoryLabel: 'Filter by Category:',
+        languageLabel: 'Filter by Language:',
         allTypes: 'All Types',
         allCategories: 'All Categories',
+        allLanguages: 'All Languages',
+        italian: 'Italian',
+        english: 'English',
+        bilingual: 'Bilingual',
         showing: 'Showing',
         of: 'of',
         entries: 'entries',
@@ -55,8 +60,13 @@ const translations = {
         searchPlaceholder: 'Cerca per nome...',
         typeLabel: 'Filtra per Tipo:',
         categoryLabel: 'Filtra per Categoria:',
+        languageLabel: 'Filtra per Lingua:',
         allTypes: 'Tutti i Tipi',
         allCategories: 'Tutte le Categorie',
+        allLanguages: 'Tutte le Lingue',
+        italian: 'Italiano',
+        english: 'Inglese',
+        bilingual: 'Bilingue',
         showing: 'Visualizzazione',
         of: 'di',
         entries: 'voci',
@@ -248,10 +258,19 @@ function populateFilters() {
 
     const typeFilter = document.getElementById('typeFilter');
     const categoryFilter = document.getElementById('categoryFilter');
+    const languageFilter = document.getElementById('languageFilter');
 
     // Clear existing options (except the first "All" option)
     typeFilter.innerHTML = `<option value="">${t.allTypes}</option>`;
     categoryFilter.innerHTML = `<option value="">${t.allCategories}</option>`;
+
+    // Update language filter options with translations
+    languageFilter.innerHTML = `
+        <option value="all">${t.allLanguages}</option>
+        <option value="IT">${t.italian}</option>
+        <option value="EN">${t.english}</option>
+        <option value="BOTH">${t.bilingual}</option>
+    `;
 
     // Add options to type filter
     Array.from(types).sort().forEach(type => {
@@ -611,6 +630,7 @@ function filterData() {
     const searchTerm = document.getElementById('search').value.toLowerCase();
     const typeFilter = document.getElementById('typeFilter').value;
     const categoryFilter = document.getElementById('categoryFilter').value;
+    const languageFilter = document.getElementById('languageFilter').value;
 
     // Use Italian columns if in Italian mode, otherwise English
     const typeKey = currentLanguage === 'it' ? 'Type_IT' : 'Type';
@@ -623,7 +643,22 @@ function filterData() {
         const matchesType = !typeFilter || entry[typeKey] === typeFilter;
         const matchesCategory = !categoryFilter || entry[categoryKey] === categoryFilter;
 
-        return matchesSearch && matchesType && matchesCategory;
+        // Language filter logic:
+        // 'all' -> show everything
+        // 'IT' -> show IT and BOTH sources
+        // 'EN' -> show EN and BOTH sources
+        // 'BOTH' -> show only BOTH sources
+        let matchesLanguage = true;
+        if (languageFilter && languageFilter !== 'all') {
+            const sourceLang = entry.Source_Language || 'IT'; // Default to IT if not set
+            if (languageFilter === 'BOTH') {
+                matchesLanguage = sourceLang === 'BOTH';
+            } else {
+                matchesLanguage = sourceLang === languageFilter || sourceLang === 'BOTH';
+            }
+        }
+
+        return matchesSearch && matchesType && matchesCategory && matchesLanguage;
     });
 
     // Reset to first page when filtering
@@ -639,6 +674,7 @@ function filterData() {
 document.getElementById('search').addEventListener('input', filterData);
 document.getElementById('typeFilter').addEventListener('change', filterData);
 document.getElementById('categoryFilter').addEventListener('change', filterData);
+document.getElementById('languageFilter').addEventListener('change', filterData);
 
 // Reset filters button
 document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
@@ -648,6 +684,7 @@ function resetFilters() {
     document.getElementById('search').value = '';
     document.getElementById('typeFilter').value = '';
     document.getElementById('categoryFilter').value = '';
+    document.getElementById('languageFilter').value = 'all';
     filterData();
 }
 
@@ -656,11 +693,13 @@ function updateFilterBadge() {
     const searchTerm = document.getElementById('search').value;
     const typeFilter = document.getElementById('typeFilter').value;
     const categoryFilter = document.getElementById('categoryFilter').value;
+    const languageFilter = document.getElementById('languageFilter').value;
 
     let count = 0;
     if (searchTerm) count++;
     if (typeFilter) count++;
     if (categoryFilter) count++;
+    if (languageFilter && languageFilter !== 'all') count++;
 
     const badge = document.getElementById('filterBadge');
     const resetBtn = document.getElementById('resetFiltersBtn');
