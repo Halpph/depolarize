@@ -159,6 +159,14 @@ function getPageData() {
 
 // Detect browser language
 function detectLanguage() {
+    // Check localStorage first
+    const savedLang = localStorage.getItem('depolarize-lang');
+    if (savedLang) {
+        currentLanguage = savedLang;
+        return;
+    }
+
+    // Otherwise detect from browser
     const browserLang = navigator.language || navigator.userLanguage;
     if (browserLang.startsWith('it')) {
         currentLanguage = 'it';
@@ -167,7 +175,46 @@ function detectLanguage() {
     }
 }
 
-// Toggle language
+// Toggle language dropdown
+function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('langDropdown');
+    const button = document.getElementById('langBtn');
+    const isOpen = dropdown.classList.contains('show');
+
+    if (isOpen) {
+        dropdown.classList.remove('show');
+        button.setAttribute('aria-expanded', 'false');
+    } else {
+        dropdown.classList.add('show');
+        button.setAttribute('aria-expanded', 'true');
+    }
+}
+
+// Select language from dropdown
+function selectLanguage(lang) {
+    currentLanguage = lang;
+    updateLanguage();
+
+    // Save to localStorage
+    localStorage.setItem('depolarize-lang', lang);
+
+    // Close dropdown
+    const dropdown = document.getElementById('langDropdown');
+    const button = document.getElementById('langBtn');
+    dropdown.classList.remove('show');
+    button.setAttribute('aria-expanded', 'false');
+
+    // Update active state
+    document.querySelectorAll('.lang-option').forEach(option => {
+        if (option.getAttribute('data-lang') === lang) {
+            option.classList.add('active');
+        } else {
+            option.classList.remove('active');
+        }
+    });
+}
+
+// Toggle language (kept for backwards compatibility)
 function toggleLanguage() {
     currentLanguage = currentLanguage === 'en' ? 'it' : 'en';
     updateLanguage();
@@ -221,6 +268,7 @@ function updateLanguage() {
     renderTable();
     renderCards();
     updateStats();
+    updateVisualSummary();
 }
 
 // Load CSV file
@@ -389,15 +437,21 @@ function renderCards() {
         const socialButtons = [];
 
         if (entry.Facebook) {
-            socialButtons.push(`<a href="${entry.Facebook}" target="_blank" class="social-btn facebook-btn" title="Visit Facebook page">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            const fbLabel = currentLanguage === 'it'
+                ? `Apri pagina Facebook di ${entry.Name}`
+                : `Open Facebook page of ${entry.Name}`;
+            socialButtons.push(`<a href="${entry.Facebook}" target="_blank" class="social-btn facebook-btn" title="Visit Facebook page" aria-label="${fbLabel}">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 Facebook
             </a>`);
         }
 
         if (entry.Instagram) {
-            socialButtons.push(`<a href="${entry.Instagram}" target="_blank" class="social-btn instagram-btn" title="Visit Instagram page">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            const igLabel = currentLanguage === 'it'
+                ? `Apri pagina Instagram di ${entry.Name}`
+                : `Open Instagram page of ${entry.Name}`;
+            socialButtons.push(`<a href="${entry.Instagram}" target="_blank" class="social-btn instagram-btn" title="Visit Instagram page" aria-label="${igLabel}">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 Instagram
             </a>`);
         }
@@ -485,15 +539,21 @@ function renderTable() {
         const socialButtons = [];
 
         if (entry.Facebook) {
-            socialButtons.push(`<a href="${entry.Facebook}" target="_blank" class="social-btn facebook-btn" title="Visit Facebook page">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            const fbLabel = currentLanguage === 'it'
+                ? `Apri pagina Facebook di ${entry.Name}`
+                : `Open Facebook page of ${entry.Name}`;
+            socialButtons.push(`<a href="${entry.Facebook}" target="_blank" class="social-btn facebook-btn" title="Visit Facebook page" aria-label="${fbLabel}">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 Facebook
             </a>`);
         }
 
         if (entry.Instagram) {
-            socialButtons.push(`<a href="${entry.Instagram}" target="_blank" class="social-btn instagram-btn" title="Visit Instagram page">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            const igLabel = currentLanguage === 'it'
+                ? `Apri pagina Instagram di ${entry.Name}`
+                : `Open Instagram page of ${entry.Name}`;
+            socialButtons.push(`<a href="${entry.Instagram}" target="_blank" class="social-btn instagram-btn" title="Visit Instagram page" aria-label="${igLabel}">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 Instagram
             </a>`);
         }
@@ -626,6 +686,7 @@ function switchPage(page) {
     renderCards();
     updateStats();
     updatePageTitle();
+    updateVisualSummary();
 }
 
 // Filter data
@@ -867,6 +928,254 @@ function toggleLegend() {
     toggleBtn.textContent = legend.classList.contains('collapsed') ? '▶' : '▼';
 }
 
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('langDropdown');
+    const button = document.getElementById('langBtn');
+    const languageDropdown = document.querySelector('.language-dropdown');
+
+    if (dropdown && button && languageDropdown) {
+        if (!languageDropdown.contains(event.target)) {
+            dropdown.classList.remove('show');
+            button.setAttribute('aria-expanded', 'false');
+        }
+    }
+});
+
+// Initialize language dropdown active state
+function initLanguageDropdown() {
+    document.querySelectorAll('.lang-option').forEach(option => {
+        if (option.getAttribute('data-lang') === currentLanguage) {
+            option.classList.add('active');
+        }
+    });
+}
+
+// Create horizontal bar chart
+function createBarChart(containerId, data, colors) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const total = data.reduce((sum, item) => sum + item.value, 0);
+    if (total === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #999;">No data available</p>';
+        return;
+    }
+
+    container.innerHTML = data.map((item, index) => {
+        const percentage = ((item.value / total) * 100).toFixed(1);
+        return `
+            <div class="bar-item">
+                <div class="bar-item-header">
+                    <span class="bar-item-label">${item.label}</span>
+                    <span class="bar-item-count">${item.value}</span>
+                </div>
+                <div class="bar-item-visual">
+                    <div class="bar-item-fill" style="width: ${percentage}%; background: ${colors[index] || '#667eea'}">
+                        <span class="bar-item-percentage">${percentage}%</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Animate bars on load
+    setTimeout(() => {
+        const fills = container.querySelectorAll('.bar-item-fill');
+        fills.forEach(fill => {
+            const width = fill.style.width;
+            fill.style.width = '0%';
+            setTimeout(() => {
+                fill.style.width = width;
+            }, 50);
+        });
+    }, 100);
+}
+
+// Update visual summary charts
+function updateVisualSummary() {
+    const pageData = getPageData();
+
+    // Reliability score distribution
+    const reliabilityData = [
+        { label: currentLanguage === 'it' ? 'Altamente Credibile (1-2)' : 'Highly Credible (1-2)', value: 0, color: '#10b981' },
+        { label: currentLanguage === 'it' ? 'Generalmente Affidabile (3-4)' : 'Generally Reliable (3-4)', value: 0, color: '#3b82f6' },
+        { label: currentLanguage === 'it' ? 'Problemi Moderati (5-6)' : 'Moderate Issues (5-6)', value: 0, color: '#f59e0b' },
+        { label: currentLanguage === 'it' ? 'Problemi Seri (7-8)' : 'Serious Problems (7-8)', value: 0, color: '#ef4444' },
+        { label: currentLanguage === 'it' ? 'Problemi Estremi (9-10)' : 'Extreme Problems (9-10)', value: 0, color: '#991b1b' }
+    ];
+
+    pageData.forEach(entry => {
+        const score = parseInt(entry.Misinformation_Score) || 0;
+        if (score <= 2) reliabilityData[0].value++;
+        else if (score <= 4) reliabilityData[1].value++;
+        else if (score <= 6) reliabilityData[2].value++;
+        else if (score <= 8) reliabilityData[3].value++;
+        else reliabilityData[4].value++;
+    });
+
+    // Filter out zero values
+    const filteredReliabilityData = reliabilityData.filter(item => item.value > 0);
+
+    // Create reliability bar chart
+    createBarChart(
+        'reliabilityBarChart',
+        filteredReliabilityData,
+        filteredReliabilityData.map(item => item.color)
+    );
+
+    // Category distribution
+    const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
+    const categories = {};
+    const categoryColors = [
+        '#667eea', '#764ba2', '#f093fb', '#4facfe',
+        '#43e97b', '#fa709a', '#fee140', '#30cfd0',
+        '#a8edea', '#fed6e3'
+    ];
+
+    pageData.forEach(entry => {
+        const category = entry[categoryKey] || (currentLanguage === 'it' ? 'Altro' : 'Other');
+        categories[category] = (categories[category] || 0) + 1;
+    });
+
+    // Convert to array and sort by count
+    const categoryData = Object.entries(categories)
+        .map(([label, value]) => ({ label, value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 10); // Top 10 categories
+
+    // Create category bar chart
+    createBarChart(
+        'categoryBarChart',
+        categoryData,
+        categoryColors.slice(0, categoryData.length)
+    );
+
+    // Party reliability analysis
+    updatePartyReliability(pageData);
+}
+
+// Calculate and display average reliability by political category
+function updatePartyReliability(pageData) {
+    const categoryKey = currentLanguage === 'it' ? 'Category_IT' : 'Category';
+    const partyStats = {};
+
+    // Calculate sum and count for each political category
+    pageData.forEach(entry => {
+        const category = entry[categoryKey];
+        if (!category) return;
+
+        const misinfoScore = parseInt(entry.Misinformation_Score) || 0;
+        const hateScore = parseInt(entry.Hate_Speech_Score) || 0;
+
+        if (!partyStats[category]) {
+            partyStats[category] = {
+                misinfoSum: 0,
+                hateSum: 0,
+                count: 0
+            };
+        }
+
+        partyStats[category].misinfoSum += misinfoScore;
+        partyStats[category].hateSum += hateScore;
+        partyStats[category].count++;
+    });
+
+    // Calculate averages and prepare data for chart
+    const partyData = Object.entries(partyStats)
+        .map(([category, stats]) => ({
+            label: category,
+            value: (stats.misinfoSum / stats.count).toFixed(1),
+            avgMisinfo: (stats.misinfoSum / stats.count).toFixed(1),
+            avgHate: (stats.hateSum / stats.count).toFixed(1),
+            count: stats.count
+        }))
+        .sort((a, b) => parseFloat(a.value) - parseFloat(b.value)); // Sort by reliability (lower is better)
+
+    // Color coding based on average score
+    const partyColors = partyData.map(item => {
+        const score = parseFloat(item.value);
+        if (score <= 2) return '#10b981';
+        if (score <= 4) return '#3b82f6';
+        if (score <= 6) return '#f59e0b';
+        if (score <= 8) return '#ef4444';
+        return '#991b1b';
+    });
+
+    // Create party reliability chart with special formatting
+    createPartyReliabilityChart('partyReliabilityChart', partyData, partyColors);
+}
+
+// Create specialized chart for party reliability
+function createPartyReliabilityChart(containerId, data, colors) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (data.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #999;">No data available</p>';
+        return;
+    }
+
+    const maxValue = Math.max(...data.map(item => parseFloat(item.value)));
+    const mostReliable = data[0];
+    const leastReliable = data[data.length - 1];
+
+    container.innerHTML = data.map((item, index) => {
+        const percentage = (parseFloat(item.value) / 10 * 100).toFixed(1);
+        const isGood = parseFloat(item.value) <= 4;
+        const isBad = parseFloat(item.value) >= 7;
+
+        let badge = '';
+        if (item.label === mostReliable.label) {
+            badge = currentLanguage === 'it'
+                ? '<span class="reliability-badge good">Più Affidabile</span>'
+                : '<span class="reliability-badge good">Most Reliable</span>';
+        } else if (item.label === leastReliable.label) {
+            badge = currentLanguage === 'it'
+                ? '<span class="reliability-badge bad">Meno Affidabile</span>'
+                : '<span class="reliability-badge bad">Least Reliable</span>';
+        }
+
+        return `
+            <div class="bar-item party-bar-item ${isGood ? 'good' : ''} ${isBad ? 'bad' : ''}">
+                <div class="bar-item-header">
+                    <span class="bar-item-label">
+                        ${item.label}
+                        ${badge}
+                    </span>
+                    <span class="bar-item-stats">
+                        <span class="score-detail" title="${currentLanguage === 'it' ? 'Disinformazione Media' : 'Avg Misinformation'}">
+                            ${currentLanguage === 'it' ? 'Disinfo' : 'Misinfo'}: <strong>${item.avgMisinfo}</strong>
+                        </span>
+                        <span class="score-detail" title="${currentLanguage === 'it' ? 'Odio Medio' : 'Avg Hate Speech'}">
+                            ${currentLanguage === 'it' ? 'Odio' : 'Hate'}: <strong>${item.avgHate}</strong>
+                        </span>
+                        <span class="count-badge">${item.count} ${currentLanguage === 'it' ? 'fonti' : 'sources'}</span>
+                    </span>
+                </div>
+                <div class="bar-item-visual">
+                    <div class="bar-item-fill" style="width: ${percentage}%; background: ${colors[index]}">
+                        <span class="bar-item-percentage">${item.value}/10</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Animate bars on load
+    setTimeout(() => {
+        const fills = container.querySelectorAll('.bar-item-fill');
+        fills.forEach(fill => {
+            const width = fill.style.width;
+            fill.style.width = '0%';
+            setTimeout(() => {
+                fill.style.width = width;
+            }, 50);
+        });
+    }, 100);
+}
+
 // Load data when page loads
 initDarkMode();
 loadCSV();
+initLanguageDropdown();

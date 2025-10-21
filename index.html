@@ -115,12 +115,27 @@
                         <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
                     </svg>
                 </button>
-                <button id="langBtn" class="control-btn" onclick="toggleLanguage()" title="Change language">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
-                    </svg>
-                    <span id="langText">IT</span>
-                </button>
+                <div class="language-dropdown">
+                    <button id="langBtn" class="control-btn" onclick="toggleLanguageDropdown()" title="Change language" aria-label="Select language" aria-haspopup="true" aria-expanded="false">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+                        </svg>
+                        <span id="langText">EN</span>
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24" class="dropdown-arrow" aria-hidden="true">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                    <div id="langDropdown" class="language-dropdown-menu" role="menu" aria-label="Language options">
+                        <button class="lang-option" onclick="selectLanguage('en')" role="menuitem" data-lang="en">
+                            <span class="lang-flag" aria-hidden="true">EN</span>
+                            <span>English</span>
+                        </button>
+                        <button class="lang-option" onclick="selectLanguage('it')" role="menuitem" data-lang="it">
+                            <span class="lang-flag" aria-hidden="true">IT</span>
+                            <span>Italiano</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="header-content">
                 <div class="hero-image-container">
@@ -130,15 +145,6 @@
                 <p class="subtitle" id="mainSubtitle">A comprehensive directory of Italian media outlets, politicians, and public figures with reliability ratings, misinformation scores, and fact-checking sources. Elenco completo di media italiani, politici e personaggi pubblici con valutazioni di affidabilità.</p>
             </div>
         </header>
-
-        <section class="search-section" aria-label="Search Italian media sources">
-            <div class="search-container">
-                <svg class="search-icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                </svg>
-                <input type="text" id="search" placeholder="Search Italian media, politicians, newspapers... / Cerca media, politici, giornali..." aria-label="Search for Italian media outlets, politicians, or public figures">
-            </div>
-        </section>
 
         <section class="cta-section" aria-label="Take action against misinformation">
             <button class="cta-toggle" onclick="toggleCTA()" title="Toggle call-to-action" aria-label="Toggle information panel">▼</button>
@@ -152,6 +158,15 @@
                 <p id="ctaText">
                     Verify Italian news sources before sharing. Consider <strong>unfollowing or being critical of misinformation sources</strong> identified below, and instead <strong>follow factual and reliable Italian media sources</strong>. Your media diet shapes your understanding of the world—choose sources that prioritize accuracy and fact-checking. Verifica le fonti italiane prima di condividere informazioni.
                 </p>
+            </div>
+        </section>
+
+        <section class="search-section" aria-label="Search Italian media sources">
+            <div class="search-container">
+                <svg class="search-icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input type="text" id="search" placeholder="Search Italian media, politicians, newspapers... / Cerca media, politici, giornali..." aria-label="Search for Italian media outlets, politicians, or public figures">
             </div>
         </section>
 
@@ -169,6 +184,7 @@
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                     </svg>
                     Factual & Reliable Sources
+                    <span class="factual-badge" aria-hidden="true">✨</span>
                 </button>
             </div>
         </div>
@@ -343,6 +359,43 @@
                 </button>
             </div>
         </div>
+
+        <!-- Visual Summary Section -->
+        <section class="visual-summary" aria-label="Data distribution summary">
+            <h3 class="summary-title">
+                <span class="en-text">Distribution Overview</span>
+                <span class="it-text">Panoramica Distribuzione</span>
+            </h3>
+            <div class="summary-charts">
+                <div class="chart-container">
+                    <h4 class="chart-title">
+                        <span class="en-text">By Reliability Score</span>
+                        <span class="it-text">Per Punteggio di Affidabilità</span>
+                    </h4>
+                    <div id="reliabilityBarChart" class="bar-chart" role="img" aria-label="Distribution by reliability score"></div>
+                </div>
+                <div class="chart-container">
+                    <h4 class="chart-title">
+                        <span class="en-text">Top 10 Categories</span>
+                        <span class="it-text">Top 10 Categorie</span>
+                    </h4>
+                    <div id="categoryBarChart" class="bar-chart" role="img" aria-label="Distribution by category"></div>
+                </div>
+            </div>
+
+            <!-- Political Party Reliability Section -->
+            <div class="party-reliability-section">
+                <h4 class="chart-title">
+                    <span class="en-text">Average Reliability by Political Orientation</span>
+                    <span class="it-text">Affidabilità Media per Orientamento Politico</span>
+                </h4>
+                <p class="chart-subtitle">
+                    <span class="en-text">Average misinformation scores by political category (lower is better)</span>
+                    <span class="it-text">Punteggi medi di disinformazione per categoria politica (più basso è meglio)</span>
+                </p>
+                <div id="partyReliabilityChart" class="bar-chart party-chart" role="img" aria-label="Average reliability by political party"></div>
+            </div>
+        </section>
 
         <aside class="disclaimer" role="note" aria-label="Disclaimer and information sources">
             <button class="disclaimer-toggle" onclick="toggleDisclaimer()" title="Toggle disclaimer" aria-label="Toggle disclaimer information">▼</button>
