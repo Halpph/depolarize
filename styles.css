@@ -685,6 +685,20 @@ body.dark-mode .lang-option.active {
     filter: brightness(1.1);
 }
 
+/* Clickable party chart bars */
+.party-bar-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.party-bar-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.party-bar-item:active {
+    transform: translateX(3px);
+}
+
 .bar-item-percentage {
     margin-left: auto;
     font-size: 0.9em;

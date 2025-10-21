@@ -752,6 +752,26 @@ function resetFilters() {
     filterData();
 }
 
+// Filter by category from chart click
+function filterByCategoryFromChart(category) {
+    // Reset other filters
+    document.getElementById('search').value = '';
+    document.getElementById('typeFilter').value = '';
+    document.getElementById('languageFilter').value = 'all';
+
+    // Set the category filter
+    document.getElementById('categoryFilter').value = category;
+
+    // Apply filters
+    filterData();
+
+    // Scroll to the table
+    const tableSection = document.querySelector('.data-section');
+    if (tableSection) {
+        tableSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
 // Update filter badge
 function updateFilterBadge() {
     const searchTerm = document.getElementById('search').value;
@@ -1137,7 +1157,7 @@ function createPartyReliabilityChart(containerId, data, colors) {
         }
 
         return `
-            <div class="bar-item party-bar-item ${isGood ? 'good' : ''} ${isBad ? 'bad' : ''}">
+            <div class="bar-item party-bar-item ${isGood ? 'good' : ''} ${isBad ? 'bad' : ''}" data-category="${item.label}">
                 <div class="bar-item-header">
                     <span class="bar-item-label">
                         ${item.label}
@@ -1173,6 +1193,18 @@ function createPartyReliabilityChart(containerId, data, colors) {
             }, 50);
         });
     }, 100);
+
+    // Add click handlers to filter by category
+    setTimeout(() => {
+        const barItems = container.querySelectorAll('.bar-item');
+        barItems.forEach(barItem => {
+            barItem.style.cursor = 'pointer';
+            barItem.addEventListener('click', () => {
+                const category = barItem.getAttribute('data-category');
+                filterByCategoryFromChart(category);
+            });
+        });
+    }, 150);
 }
 
 // Load data when page loads
