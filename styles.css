@@ -704,17 +704,11 @@ body.dark-mode .bar-item-visual {
 }
 
 /* Party Reliability Section */
-.party-reliability-section {
-    margin-top: 40px;
-    padding-top: 30px;
-    border-top: 2px solid #e9ecef;
-}
-
 .chart-subtitle {
     text-align: center;
     font-size: 0.8em;
     color: #666;
-    margin-top: -10px;
+    margin-top: 5px;
     margin-bottom: 20px;
     font-style: italic;
 }
@@ -791,10 +785,6 @@ body.dark-mode .bar-item-visual {
 }
 
 /* Dark mode styles for party reliability */
-body.dark-mode .party-reliability-section {
-    border-top-color: #374151;
-}
-
 body.dark-mode .chart-subtitle {
     color: #9ca3af;
 }
@@ -840,11 +830,6 @@ body.dark-mode .count-badge {
 
     .chart-title {
         font-size: 0.85em;
-    }
-
-    .party-reliability-section {
-        margin-top: 30px;
-        padding-top: 20px;
     }
 
     .bar-item-stats {
