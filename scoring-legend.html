@@ -399,11 +399,16 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
 
-        [lang="it"] .en-only { display: none; }
-        [lang="en"] .it-only { display: none; }
+        .en-only { display: inline; }
+        .it-only { display: none; }
+
+        body[lang="it"] .en-only { display: none !important; }
+        body[lang="it"] .it-only { display: inline !important; }
+        body[lang="en"] .en-only { display: inline !important; }
+        body[lang="en"] .it-only { display: none !important; }
     </style>
 </head>
-<body lang="en">
+<body>
     <button class="lang-toggle" onclick="toggleLanguage()">
         <span class="en-only">🇮🇹 Italiano</span>
         <span class="it-only">🇬🇧 English</span>
@@ -744,15 +749,26 @@
         function toggleLanguage() {
             const body = document.body;
             const currentLang = body.getAttribute('lang');
-            body.setAttribute('lang', currentLang === 'en' ? 'it' : 'en');
-            localStorage.setItem('depolarize-lang', currentLang === 'en' ? 'it' : 'en');
+            const newLang = currentLang === 'en' ? 'it' : 'en';
+            body.setAttribute('lang', newLang);
+            localStorage.setItem('depolarize-lang', newLang);
         }
 
-        // Load saved language preference
-        const savedLang = localStorage.getItem('depolarize-lang');
-        if (savedLang) {
-            document.body.setAttribute('lang', savedLang);
+        // Load saved language preference or detect browser language
+        function initLanguage() {
+            let lang = localStorage.getItem('depolarize-lang');
+
+            // If no saved preference, detect browser language
+            if (!lang) {
+                const browserLang = navigator.language || navigator.userLanguage;
+                lang = browserLang.startsWith('it') ? 'it' : 'en';
+            }
+
+            document.body.setAttribute('lang', lang);
         }
+
+        // Initialize language on load
+        initLanguage();
     </script>
 </body>
 </html>
