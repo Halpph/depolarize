@@ -842,6 +842,83 @@ body.dark-mode .count-badge {
         margin-left: 0;
         margin-top: 4px;
     }
+
+    /* Optimize party chart for mobile - ultra compact */
+    .party-chart {
+        gap: 4px;
+        max-width: 100%;
+    }
+
+    .party-bar-item {
+        padding: 4px 6px !important;
+    }
+
+    .bar-item-header {
+        flex-direction: row;
+        gap: 4px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .bar-item-label {
+        font-size: 0.7em;
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 45%;
+    }
+
+    .bar-item-stats {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        gap: 4px !important;
+        font-size: 0.6em;
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .score-detail {
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .count-badge {
+        font-size: 0.6em;
+        padding: 1px 4px;
+    }
+
+    .reliability-badge {
+        font-size: 0.6em;
+        padding: 1px 4px;
+        margin-top: 0 !important;
+        white-space: nowrap;
+    }
+
+    .bar-item-visual {
+        height: 14px;
+        margin-top: 2px;
+    }
+
+    .bar-item-percentage {
+        font-size: 0.6em;
+        padding: 0 4px;
+    }
+
+    .summary-title {
+        font-size: 0.85em !important;
+        margin-bottom: 8px !important;
+    }
+
+    .chart-subtitle {
+        font-size: 0.65em !important;
+        margin-bottom: 6px !important;
+    }
+
+    .visual-summary {
+        padding: 10px !important;
+    }
 }
 
 /* Search Section */
