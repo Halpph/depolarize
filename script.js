@@ -8,7 +8,7 @@ let darkMode = false;
 
 // Pagination
 let currentPaginationPage = 1;
-let itemsPerPage = 50;
+let itemsPerPage = 25;
 let totalPages = 1;
 
 // Translations
@@ -765,11 +765,47 @@ function filterByCategoryFromChart(category) {
     // Apply filters
     filterData();
 
-    // Scroll to the table
-    const tableSection = document.querySelector('.data-section');
-    if (tableSection) {
-        tableSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    // Scroll to table/cards section
+    setTimeout(() => {
+        const tableContainer = document.querySelector('.table-container');
+        const cardsContainer = document.getElementById('cardsContainer');
+
+        // Determine which container is visible (table on desktop, cards on mobile)
+        const visibleContainer = window.getComputedStyle(tableContainer).display !== 'none'
+            ? tableContainer
+            : cardsContainer;
+
+        if (visibleContainer) {
+            visibleContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 100);
+
+    // Add animation to newly filtered rows/cards
+    setTimeout(() => {
+        // Animate table rows
+        const tableRows = document.querySelectorAll('#tableBody tr');
+        tableRows.forEach((row, index) => {
+            setTimeout(() => {
+                row.classList.add('highlight-animate');
+                // Remove the class after animation completes
+                setTimeout(() => {
+                    row.classList.remove('highlight-animate');
+                }, 800);
+            }, index * 50); // Stagger the animations
+        });
+
+        // Animate cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.classList.add('highlight-animate');
+                // Remove the class after animation completes
+                setTimeout(() => {
+                    card.classList.remove('highlight-animate');
+                }, 800);
+            }, index * 50); // Stagger the animations
+        });
+    }, 200);
 }
 
 // Update filter badge
